@@ -2,9 +2,18 @@
 
 package cache_pkg;
 
-    localparam int ADDR_W = 32;
-    localparam int DATA_W = 32; 
+    import rv32_ooo_pkg::XLEN;
+
+    localparam int ADDR_W = XLEN;
+    localparam int DATA_W = XLEN; 
     localparam int BLOCK_BYTES = 16;
+
+    // L1_L2 Interface Dimensions
+    localparam int unsigned LINE_BIT_COUNT = 128;
+    localparam int unsigned LINE_ADDR_LEN = 28;
+
+    typedef logic [LINE_BIT_COUNT-1:0] line_data;
+    typedef logic [LINE_ADDR_LEN-1:0] line_addr;
 
     localparam int WORD_BYTES = DATA_W / 8; // 4
     localparam int WORDS_PER_BLOCK = BLOCK_BYTES / WORD_BYTES; 
@@ -31,8 +40,11 @@ package cache_pkg;
     localparam int L2_TAG_W   = ADDR_W - L2_INDEX_W - BLOCK_OFF_W; 
     localparam int L2_WAY_W   = $clog2(L2_WAYS); 
 
-
-
+    // L2 BRRIP
+    localparam int RRPV_W        = 2;
+    localparam int RRPV_MAX      = 3;
+    localparam int BIP_THROTTLE  = 32;   // 1-in-32 insert at RRPV 2
+    localparam int BIP_CNT_W     = $clog2(BIP_THROTTLE); // used for the counter implimentation of 1 in 32 chance of getting a 2
 
 
 endpackage
